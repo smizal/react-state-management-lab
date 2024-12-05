@@ -76,7 +76,83 @@ function App() {
       img: 'https://via.placeholder.com/150/602b9e'
     }
   ])
-  return <h1>Hello World</h1>
+
+  const [totalStrength, setTotalStrength] = useState(0)
+  const [totalAgility, setTotalAgility] = useState(0)
+
+  const handleAddFighter = async (event) => {
+    const selectedZombie = zombieFighters[event.target.id]
+    if (selectedZombie.price > money) {
+      alert('Not enough money')
+      console.log('Not enough money')
+    } else {
+      setMoney(money - selectedZombie.price)
+      setTotalStrength(totalStrength + selectedZombie.strength)
+      setTotalAgility(totalAgility + selectedZombie.agility)
+      team.push(selectedZombie)
+      setTeam([...team])
+    }
+  }
+
+  const handleRemoveFighter = async (event) => {
+    const removedMember = team[event.target.id]
+    setMoney(money + removedMember.price)
+    setTotalStrength(totalStrength - removedMember.strength)
+    setTotalAgility(totalAgility - removedMember.agility)
+    team.splice(event.target.id, 1)
+    setTeam([...team])
+  }
+
+  /* const strength = team.reduce((acc, member) => {
+    return acc + member.strength
+  }, 0)
+
+  const agility = team.reduce((acc, member) => {
+    return acc + member.agility
+  }, 0) */
+
+  return (
+    <>
+      <h1>Zombie Fighters</h1>
+      <p>Current Money: {money}</p>
+      <p>Team Strength: {totalStrength}</p>
+      <p>Team Agility: {totalAgility}</p>
+      <p>Team</p>
+      {team.length ? (
+        <ul>
+          {team.map((fighter, index) => (
+            <li>
+              <img src={fighter.img} alt="" />
+              <h3>{fighter.name}</h3>
+              <p>Price: {fighter.price}</p>
+              <p>Strength: {fighter.strength}</p>
+              <p>Agility: {fighter.agility}</p>
+              <button id={index} onClick={handleRemoveFighter}>
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        'Pick some team members!'
+      )}
+
+      <ul>
+        {zombieFighters.map((fighter, index) => (
+          <li>
+            <img src={fighter.img} alt="" />
+            <h3>{fighter.name}</h3>
+            <p>Price: {fighter.price}</p>
+            <p>Strength: {fighter.strength}</p>
+            <p>Agility: {fighter.agility}</p>
+            <button id={index} onClick={handleAddFighter}>
+              Add
+            </button>
+          </li>
+        ))}
+      </ul>
+    </>
+  )
 }
 
 export default App
